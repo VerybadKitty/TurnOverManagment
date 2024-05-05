@@ -4,6 +4,8 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.PropertyName
 import java.util.Date
 
+
+
 data class User(
     @Exclude val id: String,
     @PropertyName("name") val name: String,
@@ -12,16 +14,16 @@ data class User(
 )
 
 data class Property(
-    @Exclude val id: String,
+    @Exclude var id: String,
     @PropertyName("address") val address: String,
     @PropertyName("numberOfUnits") val numberOfUnits: Int,
     @PropertyName("createdAt") val createdAt: Date? = null,
     @PropertyName("updatedAt") val updatedAt: Date? = null
 )
 
-data class Unit(
+data class PropertyUnit(
     @Exclude val id: String,
-    @PropertyName("propertyId") val propertyId: String,
+    @PropertyName("propertyId") var propertyId: String,
     @PropertyName("unitNumber") val unitNumber: String,
     @PropertyName("condition") val condition: String
 )
@@ -40,10 +42,11 @@ data class UnitReview(
     @Exclude val id: String,
     @PropertyName("unitId") val unitId: String,
     @PropertyName("reviewerId") val reviewerId: String,
-    @PropertyName("dateReviewed") val dateReviewed: Date,
+    @PropertyName("dateReviewed") val dateReviewed: Long,
     @PropertyName("overallCondition") val overallCondition: String,
     @PropertyName("observations") val observations: List<Observation>,
-    @PropertyName("photosUrls") val photosUrls: List<String>
+    @PropertyName("photosUrls") val photosUrls: List<String>,
+    val reviewText: String
 )
 
 data class Observation(
@@ -57,4 +60,11 @@ enum class Severity {
     LOW, MEDIUM, HIGH, CRITICAL
 }
 
+data class Question(
+    @Exclude val id: String,
+    @PropertyName("content") val content: String,
+    @PropertyName("response") val response: String,
+    @PropertyName("priority") val priority: Int,
+    @PropertyName("archived") val archived: Boolean = false
+)
 

@@ -1,43 +1,39 @@
 package com.example.turnovermanagment.Data
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 
 class PropertyService(private val databaseManager: DatabaseManager) {
 
-    suspend fun addProperty(property: Property): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.addProperty(property).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun addProperty(property: Property) = flow {
+        emit(databaseManager.addProperty(property))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateProperty(propertyId: String, propertyUpdates: Map<String, Any>): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.updateProperty(propertyId, propertyUpdates).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun updateProperty(propertyId: String, propertyUpdates: Map<String, Any>) = flow {
+        emit(databaseManager.updateProperty(propertyId, propertyUpdates))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getPropertyDetails(propertyId: String): Flow<Result<Property>> = flow {
-        val property = databaseManager.getProperty(propertyId).await()
-        if (property != null) {
-            emit(Result.success(property))
-        } else {
-            throw Exception("Property not found")
-        }
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun getPropertyDetails(propertyId: String) = flow {
+        emit(databaseManager.getProperty(propertyId))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun addUnit(propertyId: String, unit: Unit): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.addUnit(propertyId, unit).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun retrieveUnits(propertyId: String) = flow {
+        emit(databaseManager.getUnitsForProperty(propertyId))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateUnit(unitId: String, unitUpdates: Map<String, Any>): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.updateUnit(unitId, unitUpdates).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun addUnit(propertyId: String, unit: PropertyUnit) = flow {
+        emit(databaseManager.addUnit(propertyId, unit))
+    }.flowOn(Dispatchers.IO)
+
+    fun getProperties() = flow {
+        emit(databaseManager.getProperties())
+    }.flowOn(Dispatchers.IO)
+
+    fun deleteProperty(propertyId: String) = flow {
+        emit(databaseManager.deleteProperty(propertyId))
+    }.flowOn(Dispatchers.IO)
 }
+
+
+

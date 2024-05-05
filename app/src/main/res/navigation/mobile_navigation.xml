@@ -3,23 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_homeCompose">
 
-    <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.example.turnovermanagment.ui.home.HomeFragment"
+    <!-- Replace the existing HomeFragment with a Composable function -->
+    <composable
+        android:id="@+id/navigation_homeCompose"
+        android:name="com.example.turnovermanagment.ui.PropertyScreen"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
+    <!-- Existing Dashboard Fragment remains unchanged -->
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.turnovermanagment.ui.dashboard.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
+    <!-- Existing Notifications Fragment remains unchanged -->
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.turnovermanagment.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <!-- New Composable Screen as an additional destination -->
+    <composable
+        android:id="@+id/navigation_newComposeScreen"
+        android:name="com.example.turnovermanagment.ui.NewComposeScreen"
+        android:label="New Compose Screen"
+        tools:layout="@layout/fragment_new_compose_screen" />
 </navigation>

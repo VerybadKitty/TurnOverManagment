@@ -1,34 +1,28 @@
 package com.example.turnovermanagment.Data
 
-import kotlinx.coroutines.flow.Flow
+
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 
 
 class UserService(private val databaseManager: DatabaseManager) {
 
-    suspend fun addUser(user: User): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.addUser(user).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun addUser(user: User) = flow {
+        emit(databaseManager.addUser(user))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun updateUser(userId: String, updates: Map<String, Any>): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.updateUser(userId, updates).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun updateUser(userId: String, updates: Map<String, Any>) = flow {
+        emit(databaseManager.updateUser(userId, updates))
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun deleteUser(userId: String): Flow<Result<Unit>> = flow {
-        emit(Result.success(databaseManager.deleteUser(userId).await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun deleteUser(userId: String) = flow {
+        emit(databaseManager.deleteUser(userId))
+    }.flowOn(Dispatchers.IO)
 
-    fun listUsers(): Flow<Result<List<User>>> = flow {
-        emit(Result.success(databaseManager.getUsers().await()))
-    }.catch { e ->
-        emit(Result.failure(e))
-    }
+    fun listUsers() = flow {
+        emit(databaseManager.getUsers())
+    }.flowOn(Dispatchers.IO)
 }
+
 

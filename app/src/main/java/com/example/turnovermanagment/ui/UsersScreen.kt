@@ -19,22 +19,43 @@ fun UsersScreen(userService: UserService) {
     val isLoading by userViewModel.isLoading.collectAsState()
     val errorMessage by userViewModel.errorMessage.collectAsState()
 
-    UsersContent(usersState, isLoading, errorMessage) {
-        userViewModel.loadUsers() // Refresh users on user action
-    }
+    UsersContent(
+        usersState = usersState,
+        isLoading = isLoading,
+        errorMessage = errorMessage,
+        onRefresh = { userViewModel.loadUsers() },
+        onAddUser = { userViewModel.addUser(it) }
+    )
 }
+
 
 @Composable
 fun UsersContent(
     usersState: Resource<List<User>>,
     isLoading: Boolean,
     errorMessage: String?,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onAddUser: (User) -> Unit
 ) {
+    var showAddUserDialog by remember { mutableStateOf(false) }
+
+    if (showAddUserDialog) {
+        AddUserDialog(onAddUser = {
+            onAddUser(it)
+            showAddUserDialog = false
+        }, onDismiss = { showAddUserDialog = false })
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Button(onClick = onRefresh) {
                 Text("Refresh")
+            }
+            Button(onClick = { showAddUserDialog = true }) {
+                Text("Add User")
             }
         }
 
@@ -83,4 +104,49 @@ fun UserListItem(user: User) {
             Text("Email: ${user.email}", style = MaterialTheme.typography.body1)
         }
     }
+}
+@Composable
+fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
+    var name by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var role by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New User") },
+        text = {
+            Column {
+                TextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") }
+                )
+                TextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") }
+                )
+                TextField(
+                    value = role,
+                    onValueChange = { role = it },
+                    label = { Text("Role") }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onAddUser(User(id = "", name = name, email = email, role = role)) // assuming IDs are generated server-side or by some function
+                    onDismiss()
+                }
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }

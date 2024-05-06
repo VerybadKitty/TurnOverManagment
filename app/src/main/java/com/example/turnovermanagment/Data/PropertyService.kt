@@ -26,6 +26,7 @@ class PropertyService(private val databaseManager: DatabaseManager) {
         emit(databaseManager.addUnit(propertyId, unit))
     }.flowOn(Dispatchers.IO)
 
+
     fun getProperties() = flow {
         emit(databaseManager.getProperties())
     }.flowOn(Dispatchers.IO)

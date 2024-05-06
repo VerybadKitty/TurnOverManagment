@@ -20,22 +20,40 @@ fun QuestionsScreen(questionQueueService: QuestionQueueService) {
     val isLoading by questionsViewModel.isLoading.collectAsState()
     val errorMessage by questionsViewModel.errorMessage.collectAsState()
 
-    QuestionsContent(questionsState, isLoading, errorMessage) {
-        questionsViewModel.loadQuestions() // Refresh questions on user action
-    }
+    QuestionsContent(
+        questionsState = questionsState,
+        isLoading = isLoading,
+        errorMessage = errorMessage,
+        onRefresh = { questionsViewModel.loadQuestions() },
+        onAddQuestion = { questionsViewModel.addQuestion(it) }
+    )
 }
+
 
 @Composable
 fun QuestionsContent(
     questionsState: Resource<List<Question>>,
     isLoading: Boolean,
     errorMessage: String?,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onAddQuestion: (Question) -> Unit
 ) {
+    var showAddQuestionDialog by remember { mutableStateOf(false) }
+
+    if (showAddQuestionDialog) {
+        AddQuestionDialog(onAddQuestion = {
+            onAddQuestion(it)
+            showAddQuestionDialog = false
+        }, onDismiss = { showAddQuestionDialog = false })
+    }
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
             Button(onClick = onRefresh) {
                 Text("Refresh")
+            }
+            Button(onClick = { showAddQuestionDialog = true }) {
+                Text("Add Question")
             }
         }
 
@@ -85,5 +103,50 @@ fun QuestionListItem(question: Question) {
     }
 }
 
+@Composable
+fun AddQuestionDialog(onAddQuestion: (Question) -> Unit, onDismiss: () -> Unit) {
+    var content by remember { mutableStateOf("") }
+    var response by remember { mutableStateOf("") }
+    var priority by remember { mutableStateOf(0) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New Question") },
+        text = {
+            Column {
+                TextField(
+                    value = content,
+                    onValueChange = { content = it },
+                    label = { Text("Content") }
+                )
+                TextField(
+                    value = response,
+                    onValueChange = { response = it },
+                    label = { Text("Response") }
+                )
+                TextField(
+                    value = priority.toString(),
+                    onValueChange = { priority = it.toIntOrNull() ?: 0 },
+                    label = { Text("Priority") }
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onAddQuestion(Question(id = "", content = content, response = response, priority = priority))
+                    onDismiss()
+                }
+            ) {
+                Text("Submit")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 
 

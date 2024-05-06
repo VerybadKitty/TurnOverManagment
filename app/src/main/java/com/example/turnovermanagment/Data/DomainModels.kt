@@ -5,55 +5,55 @@ import com.google.firebase.firestore.PropertyName
 import java.util.Date
 
 
-
 data class User(
-    @Exclude val id: String,
-    @PropertyName("name") val name: String,
-    @PropertyName("email") val email: String,
-    @PropertyName("role") val role: String
+    @Exclude var id: String = "",
+    @PropertyName("name") var name: String = "",
+    @PropertyName("email") var email: String = "",
+    @PropertyName("role") var role: String = ""
 )
 
 data class Property(
-    @Exclude var id: String,
-    @PropertyName("address") val address: String,
-    @PropertyName("numberOfUnits") val numberOfUnits: Int,
-    @PropertyName("createdAt") val createdAt: Date? = null,
-    @PropertyName("updatedAt") val updatedAt: Date? = null
+    @Exclude var id: String = "",
+    @PropertyName("address") var address: String = "",
+    @PropertyName("numberOfUnits") var numberOfUnits: Int = 0,
+    @PropertyName("createdAt") var createdAt: Date? = null,
+    @PropertyName("updatedAt") var updatedAt: Date? = null
 )
 
 data class PropertyUnit(
-    @Exclude val id: String,
-    @PropertyName("propertyId") var propertyId: String,
-    @PropertyName("unitNumber") val unitNumber: String,
-    @PropertyName("condition") val condition: String
+    @Exclude var id: String = "",
+    @PropertyName("propertyId") var propertyId: String = "",
+    @PropertyName("unitNumber") var unitNumber: String = "",
+    @PropertyName("condition") var condition: String = "",
+    @PropertyName("hasReview") var hasReview: Boolean = false
 )
 
 data class Task(
-    @Exclude val id: String,
-    @PropertyName("description") val description: String,
-    @PropertyName("assignedTo") val assignedTo: String?,
-    @PropertyName("priority") val priority: Int,
-    @PropertyName("status") val status: String,
-    @PropertyName("dueDate") val dueDate: Date,
-    @PropertyName("relatedUnitId") val relatedUnitId: String
+    @Exclude var id: String = "",
+    @PropertyName("description") var description: String = "",
+    @PropertyName("assignedTo") var assignedTo: String? = null,
+    @PropertyName("priority") var priority: Int = 0,
+    @PropertyName("status") var status: String = "",
+    @PropertyName("dueDate") var dueDate: Date = Date(),
+    @PropertyName("relatedUnitId") var relatedUnitId: String = ""
 )
 
 data class UnitReview(
-    @Exclude val id: String,
-    @PropertyName("unitId") val unitId: String,
-    @PropertyName("reviewerId") val reviewerId: String,
-    @PropertyName("dateReviewed") val dateReviewed: Long,
-    @PropertyName("overallCondition") val overallCondition: String,
-    @PropertyName("observations") val observations: List<Observation>,
-    @PropertyName("photosUrls") val photosUrls: List<String>,
-    val reviewText: String
+    @Exclude var id: String = "",
+    @PropertyName("unitId") var unitId: String = "",
+    @PropertyName("reviewerId") var reviewerId: String = "",
+    @PropertyName("dateReviewed") var dateReviewed: Long = System.currentTimeMillis(),
+    @PropertyName("overallCondition") var overallCondition: String = "",
+    @PropertyName("observations") var observations: List<Observation> = emptyList(),
+    @PropertyName("photosUrls") var photosUrls: List<String> = emptyList(),
+    var reviewText: String = ""
 )
 
 data class Observation(
-    @PropertyName("area") val area: String,
-    @PropertyName("issueType") val issueType: String,
-    @PropertyName("description") val description: String,
-    @PropertyName("severity") val severity: Severity
+    @PropertyName("area") var area: String = "",
+    @PropertyName("issueType") var issueType: String = "",
+    @PropertyName("description") var description: String = "",
+    @PropertyName("severity") var severity: Severity = Severity.LOW
 )
 
 enum class Severity {
@@ -61,10 +61,10 @@ enum class Severity {
 }
 
 data class Question(
-    @Exclude val id: String,
-    @PropertyName("content") val content: String,
-    @PropertyName("response") val response: String,
-    @PropertyName("priority") val priority: Int,
-    @PropertyName("archived") val archived: Boolean = false
+    @Exclude var id: String = "",
+    @PropertyName("content") var content: String = "",
+    @PropertyName("response") var response: String = "",
+    @PropertyName("priority") var priority: Int = 0,
+    @PropertyName("archived") var archived: Boolean = false
 )
 

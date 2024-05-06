@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.turnovermanagment.Data.Observation
 import com.example.turnovermanagment.Data.ReviewService
 import com.example.turnovermanagment.Data.UnitReview
 import com.example.turnovermanagment.utils.Resource
@@ -110,29 +111,65 @@ fun ReviewListItem(review: UnitReview) {
 
 @Composable
 fun AddReviewDialog(onAddReview: (UnitReview) -> Unit, onDismiss: () -> Unit) {
+    var reviewerId by remember { mutableStateOf("") }
+    var overallCondition by remember { mutableStateOf("") }
+    var unitId by remember { mutableStateOf("") }
     var reviewText by remember { mutableStateOf("") }
+    var observationsText by remember { mutableStateOf("") }
+    var photosUrlsText by remember { mutableStateOf("") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Add Review") },
         text = {
-            TextField(
-                value = reviewText,
-                onValueChange = { reviewText = it },
-                label = { Text("Enter your review") }
-            )
+            Column {
+                TextField(
+                    value = reviewerId,
+                    onValueChange = { reviewerId = it },
+                    label = { Text("Reviewer ID") }
+                )
+                TextField(
+                    value = unitId,
+                    onValueChange = { unitId = it },
+                    label = { Text("Unit ID") }
+                )
+                TextField(
+                    value = overallCondition,
+                    onValueChange = { overallCondition = it },
+                    label = { Text("Overall Condition") }
+                )
+                TextField(
+                    value = observationsText,
+                    onValueChange = { observationsText = it },
+                    label = { Text("Observations (comma-separated)") }
+                )
+                TextField(
+                    value = photosUrlsText,
+                    onValueChange = { photosUrlsText = it },
+                    label = { Text("Photo URLs (comma-separated)") }
+                )
+                TextField(
+                    value = reviewText,
+                    onValueChange = { reviewText = it },
+                    label = { Text("Review Text") }
+                )
+            }
         },
         confirmButton = {
             Button(
                 onClick = {
+                    // Parse the observations and photo URLs from comma-separated strings to lists
+                    val observationsList = observationsText.split(",").map { it.trim() }
+                    val photosUrlsList = photosUrlsText.split(",").map { it.trim() }
+
                     onAddReview(UnitReview(
-                        id = "new",  // Assuming you generate IDs server-side or have a default value
-                        reviewerId = "User123",
+                        id = "new", // This should ideally be generated server-side or omitted for Firestore to auto-generate
+                        reviewerId = reviewerId,
+                        unitId = unitId,
                         dateReviewed = System.currentTimeMillis(),
-                        overallCondition = "Good",
-                        observations = listOf(),
-                        photosUrls = listOf(),  // Assuming default or empty for new entries
-                        unitId = "unit001",  // Example unit ID
+                        overallCondition = overallCondition,
+                        observations = observationsList.map { Observation(description = it) }, // Simplified mapping
+                        photosUrls = photosUrlsList,
                         reviewText = reviewText
                     ))
                     onDismiss()

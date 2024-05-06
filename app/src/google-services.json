@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "622302458829",
+    "project_id": "turnovermanager-d2a2d",
+    "storage_bucket": "turnovermanager-d2a2d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:622302458829:android:1d0f248f159d890a82ca84",
+        "android_client_info": {
+          "package_name": "com.example.turnovermanagment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5ggBnWoo43toyMWJoSmemzOpKLayhypE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

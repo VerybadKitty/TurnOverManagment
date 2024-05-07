@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.turnovermanagment.Data.Observation
 import com.example.turnovermanagment.Data.ReviewService
+import com.example.turnovermanagment.Data.Severity
 import com.example.turnovermanagment.Data.UnitReview
 import com.example.turnovermanagment.utils.Resource
 
@@ -109,6 +112,7 @@ fun ReviewListItem(review: UnitReview) {
     }
 }
 
+
 @Composable
 fun AddReviewDialog(onAddReview: (UnitReview) -> Unit, onDismiss: () -> Unit) {
     var reviewerId by remember { mutableStateOf("") }
@@ -117,6 +121,10 @@ fun AddReviewDialog(onAddReview: (UnitReview) -> Unit, onDismiss: () -> Unit) {
     var reviewText by remember { mutableStateOf("") }
     var observationsText by remember { mutableStateOf("") }
     var photosUrlsText by remember { mutableStateOf("") }
+    var area by remember { mutableStateOf("") }
+    var issueType by remember { mutableStateOf("") }
+    var severityIndex by remember { mutableStateOf(0) }
+    var showSeverityDropdown by remember { mutableStateOf(false) } // State to control the visibility of the severity dropdown
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -138,6 +146,40 @@ fun AddReviewDialog(onAddReview: (UnitReview) -> Unit, onDismiss: () -> Unit) {
                     onValueChange = { overallCondition = it },
                     label = { Text("Overall Condition") }
                 )
+                TextField(
+                    value = area,
+                    onValueChange = { area = it },
+                    label = { Text("Area") }
+                )
+                TextField(
+                    value = issueType,
+                    onValueChange = { issueType = it },
+                    label = { Text("Issue Type") }
+                )
+                TextField(
+                    readOnly = true,
+                    value = Severity.values()[severityIndex].name,
+                    onValueChange = {},
+                    label = { Text("Severity") },
+                    trailingIcon = {
+                        IconButton(onClick = { showSeverityDropdown = true }) {
+                            Icon(Icons.Filled.ArrowDropDown, "dropdown")
+                        }
+                    }
+                )
+                DropdownMenu(
+                    expanded = showSeverityDropdown,
+                    onDismissRequest = { showSeverityDropdown = false }
+                ) {
+                    Severity.values().forEachIndexed { index, severity ->
+                        DropdownMenuItem(onClick = {
+                            severityIndex = index
+                            showSeverityDropdown = false
+                        }) {
+                            Text(severity.name)
+                        }
+                    }
+                }
                 TextField(
                     value = observationsText,
                     onValueChange = { observationsText = it },
@@ -168,7 +210,14 @@ fun AddReviewDialog(onAddReview: (UnitReview) -> Unit, onDismiss: () -> Unit) {
                         unitId = unitId,
                         dateReviewed = System.currentTimeMillis(),
                         overallCondition = overallCondition,
-                        observations = observationsList.map { Observation(description = it) }, // Simplified mapping
+                        observations = observationsList.map {
+                            Observation(
+                                area = area,
+                                issueType = issueType,
+                                description = it,
+                                severity = Severity.values()[severityIndex]
+                            )
+                        },
                         photosUrls = photosUrlsList,
                         reviewText = reviewText
                     ))

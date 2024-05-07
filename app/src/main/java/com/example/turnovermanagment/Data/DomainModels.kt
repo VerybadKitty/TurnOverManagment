@@ -3,17 +3,17 @@ package com.example.turnovermanagment.Data
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.PropertyName
 import java.util.Date
-
+import java.util.UUID
 
 data class User(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("name") var name: String = "",
     @PropertyName("email") var email: String = "",
     @PropertyName("role") var role: String = ""
 )
 
 data class Property(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("address") var address: String = "",
     @PropertyName("numberOfUnits") var numberOfUnits: Int = 0,
     @PropertyName("createdAt") var createdAt: Date? = null,
@@ -21,7 +21,7 @@ data class Property(
 )
 
 data class PropertyUnit(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("propertyId") var propertyId: String = "",
     @PropertyName("unitNumber") var unitNumber: String = "",
     @PropertyName("condition") var condition: String = "",
@@ -29,7 +29,7 @@ data class PropertyUnit(
 )
 
 data class Task(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("description") var description: String = "",
     @PropertyName("assignedTo") var assignedTo: String? = null,
     @PropertyName("priority") var priority: Int = 0,
@@ -39,7 +39,7 @@ data class Task(
 )
 
 data class UnitReview(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("unitId") var unitId: String = "",
     @PropertyName("reviewerId") var reviewerId: String = "",
     @PropertyName("dateReviewed") var dateReviewed: Long = System.currentTimeMillis(),
@@ -61,10 +61,9 @@ enum class Severity {
 }
 
 data class Question(
-    @Exclude var id: String = "",
+    @Exclude var id: String = UUID.randomUUID().toString(),
     @PropertyName("content") var content: String = "",
     @PropertyName("response") var response: String = "",
     @PropertyName("priority") var priority: Int = 0,
     @PropertyName("archived") var archived: Boolean = false
 )
-
